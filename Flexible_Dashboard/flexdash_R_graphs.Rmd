@@ -1,0 +1,496 @@
+---
+title: "Flexible Dashboard"
+output: 
+  flexdashboard::flex_dashboard:
+    navbar:
+      - {title: "About", href: "https://naver.com", align: left}
+      - {title: "Google", href: "https://google.com", align: right}
+      - {title: "File", href: "C:/Users/Daniel/Documents/ipds_kr_R_book/ch10_Breast_Cancer_Predicting/ch10%20Breast%20Cancer%20Predicting.nb.html", align: right}
+    social : ['twitter', 'facebook', 'menu']
+    orientation: rows
+    # vertical_layout: scroll
+    source_code: embed
+    vertical_layout: scroll
+    theme: yeti
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+# install.packages('d3heatmap')
+library(d3heatmap)
+library(dygraphs)
+library(plotly)
+library(xts)
+# install.packages('metricsgraphics')
+library(metricsgraphics)
+library(flexdashboard)
+library(tidyverse)
+library(plotly)
+library(dygraphs)
+library(DT)
+library(gapminder)
+library(gridExtra)
+library(ggthemes)
+```
+
+Analysis {.storyboard}
+======================================================================
+
+
+### Leaflet is a JavaScript library for creating dynamic maps that support panning and zooming along with variou s annotations.
+
+```{r}
+library(leaflet)
+leaflet() %>%
+  addTiles() %>%
+  addMarkers(lng=174.768, lat=-36.852, popup="The bith place of R")
+```
+
+***
+
+https://rstudio.github.io/leaflet/
+
+- Interactive panning / zooming
+
+- Compose maps using arbitary combinations of map titles, markers, polygons, lines, popups, and GeoJSON.
+
+- Create maps right from the R console or RStudio
+
+- Embed maps in knitr/R Markdown documents and Shint apps
+
+- Easily render Spatial objects from the sp package, or data frames with lattitude/longitude columns
+
+- Use map bounds and mouse events to drive Shiny logic
+
+### d3heatmap creates interactive D3 heatmaps including support for row/column highlighting and zooming.  {data-commentary-height=700}
+
+```{r}
+data("mtcars")
+d3heatmap(mtcars[, -2], scale = 'column', colors="Blues")
+```
+
+*** 
+
+https://github.com/rstudio/d3heatmap
+
+- Highlight rows/columns by clicking axis labels
+
+- Click and drag over colormap to zoom in (click on colormap to zoom out)
+
+- Optional clustering and dendrograms, courtesy of base::heatmap
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+### Dygraphs provides rich facilities for charting time-series data in R and includes support for many interactive features.
+
+
+```{r}
+# data("sample_matrix")
+# m <- tail(sample_matrix, n=32)
+# 
+# # cbind(m, apply(m[, 1:3], 1, mean))
+# 
+# m %>%
+#   as.data.frame() %>%
+#   row.names.data.frame() %>% enframe() %>%
+#   rename(date = value) %>%
+#   select(-name) -> date_df
+# 
+# m %>% as_tibble() -> m_df
+# 
+# date_df %>%
+#   bind_cols(m_df) %>%
+#   gather(variable, value, -c(date, Close)) %>%
+#   group_by(date) %>%
+#   summarise(mean.value = mean(value)) -> mean_df
+# 
+# date_df %>%
+#   bind_cols(m_df) %>%
+#   left_join(mean_df, by = 'date') %>%
+#   mutate(date = as.Date(date, "%Y-%m-%d")) -> date_df_1
+# 
+# m <- xts(date_df_1[, -1], date_df_1[, 1], order.by = as.POSIXct(date_df_1$date))
+# saveRDS(m, file = 'm.rds')
+
+m <- readRDS('m.rds')
+
+dygraph(m) %>%
+  dyCandlestick()
+```
+
+***
+
+https://rstudio.github.io/dygraphs/
+
+- Automatically plots xts time series objects (or any object convertible to xts).
+
+- Highly configurable axis and series display (including optional second Y-axis).
+
+- Rich interactive features including zoom/pan and series/point highlighting.
+
+- Display upper/lower bars (e.g. prediction intervals) around series.
+
+- Various graph overlays including shaded regions, event lines, and point annotations.
+
+- 주가 변화를 예측해 보면 다음 주 오를 전망입니다.
+
+
+### Plotly provides bindings to the plotly.js library and allows you to easily translate your ggplot2 graphics into an interactive web-based version.
+
+```{r}
+library(plotly)
+p <- ggplot(data = diamonds, aes(x = cut, fill = clarity)) +
+            geom_bar(position = "dodge")
+ggplotly(p)
+```
+
+***
+
+https://plot.ly/ggplot2/
+
+If you use ggplot2, `ggplotly()` converts your plots to an interactive, web-based version! It also provides sensible tooltips, which assists decoding of values encoded as visual properties in the plot.
+
+plotly supports some chart types that ggplot2 doesn't (such as 3D surface, point, and line plots). You can create these (or any other plotly) charts using `plot_ly()`.
+
+<br>
+
+<br>
+
+<br>
+
+
+### MetricsGraphics enables easy creation of D3 scatterplots, line charts, and histograms.
+
+```{r}
+library(metricsgraphics)
+mjs_plot(mtcars, x=wt, y=mpg) %>%
+  mjs_point(color_accessor=carb, size_accessor=carb) %>%
+  mjs_labs(x="Weight of Car", y="Miles per Gallon")
+```
+
+***
+
+https://hrbrmstr.github.io/metricsgraphics/
+
+Building metricsgraphics charts follows the “piping” idiom made popular through the magrittr, ggvis and dplyr packages. This makes it possible to avoid one giant function with a ton of parameters and facilitates breaking out the chart building into logical steps. 
+
+While MetricsGraphics.js charts may not have the flexibility of ggplot2, you can build functional, interactive [multi-]line, scatterplot, bar charts & histograms and + even link charts together.
+
+<br>
+
+<br>
+
+<br>
+
+
+Page 1 {data-navmenu="Menu A"}
+======================================================================
+
+Monthly deaths from bronchitis, emphysema and asthma in the
+UK, 1974–1979 (Source: P. J. Diggle, 1990, Time Series: A
+Biostatistical Introduction. Oxford, table A.3)
+
+```{r}
+
+wdbc <- tbl_df(read.table('wdbc.data', strip.white = T, 
+                          sep = ',', header = F))
+
+feature_names <- c('radius', 'texture', 'perimeter', 'area', 'smoothness', 'compactness', 
+                   'concavity', 'concave_points', 'symmetry', 'fractal_dim')
+
+names(wdbc) <- c('id', 
+                 'class', 
+                 paste0('mean_', feature_names),
+                 paste0('se_', feature_names),
+                 paste0('worst_', feature_names))
+
+```
+
+Rows
+-----------------------------------------------------------------------
+
+### Articles per Day
+
+```{r}
+# articles <- computeArticles()
+valueBox(42, icon= 'fa-pencil', href = "flexdash_1.html")
+```
+
+### Commnents per Day
+
+```{r}
+# comments <- computeComments()
+valueBox(126, icon = 'glyphicon-comment')
+```
+
+### Spam per Day
+
+```{r}
+spam <- 5
+valueBox(spam,
+         icon = 'fa-trash')
+```
+
+
+Rows
+-----------------------------------------------------------------------
+
+### Chart 1 {.no-title .no-padding}
+
+```{r}
+cars %>%
+  ggplot(aes(speed, dist)) +
+  geom_point() + 
+  geom_smooth(method = "lm") + 
+  theme_minimal() +
+  xlab("Speed(mile/h)") +
+  ylab("Distance(mile)") +
+  ggtitle("Car Graph") -> p_car
+
+ggplotly(p_car)
+```
+
+> With car speed dataset, the linear regression result.
+
+### Chart 2 {.no-title data-padding=10}
+
+```{r}
+pressure %>%
+  ggplot(aes(temperature, pressure)) + 
+  geom_point() +
+  geom_smooth(method = "gam") + 
+  theme_minimal() +
+  xlab("Temperature") +
+  ylab("Pressure") +
+  ggtitle("Pressure Graph") -> p_pressure
+
+ggplotly(p_pressure)
+``` 
+
+
+
+Rows 
+-----------------------------------------------------------------------
+
+### Contact Rate
+
+```{r}
+rate <- 91
+
+gauge(rate, min = 0, max = 100, symbol = '%',
+      gaugeSectors(success = c(80, 100),
+                   warning = c(40, 79),
+                   danger = c(0, 39)
+                   ))
+```
+
+### Average Rating
+
+```{r}
+rating <- 37.4
+
+gauge(rating, min = 0, max = 50, 
+      gaugeSectors(success = c(41, 50),
+                   warning = c(21, 40),
+                   danger = c(0, 20)
+                   ))
+```
+
+### Cancellations
+
+```{r}
+cancellations <- 7
+
+gauge(cancellations, min = 0, max = 50, 
+      gaugeSectors(success = c(0, 2),
+                   warning = c(3, 6),
+                   danger = c(7, 10)
+                   ), 
+      href = 'flexdash_1.html')
+```
+
+### About dygraphs
+
+This example makes use of the dygraphs R package. The dygraphs
+package provides rich facilities for charting time-series data 
+in R. You can use dygraphs at the R console, within R Markdown
+documents, and within Shiny applications.
+
+
+Page 2 {data-orientation=rows data-navmenu="Menu A"}
+======================================================================
+
+Rows 
+-----------------------------------------------------------------------
+
+### Chart E
+
+```{r}
+diamonds %>%
+  sample_n(1000) %>%
+  ggplot(aes(carat, price, col = clarity)) +
+  geom_point() -> p_diamonds
+
+ggplotly(p_diamonds)
+```
+
+
+### Chart F
+
+```{r}
+gapminder %>%
+  filter(year == 2007) %>%
+  ggplot(aes(gdpPercap, lifeExp)) +
+  geom_point(aes(size = pop, col = continent)) +
+  scale_x_log10() +
+  ggtitle("Gapminder data for 2007") -> p_gapminder
+
+ggplotly(p_gapminder)
+```
+
+
+Page 3 {data-orientation=columns data-icon="fa-list"}
+======================================================================
+
+Column
+-----------------------------------------------------------------------
+
+### Chart G
+
+```{r}
+
+custom_theme <- theme_tufte() +
+  theme(legend.position = c(.9, .9),
+           legend.title = element_text(face = 'italic', size = 12),
+           axis.title = element_text(face = 'bold', size = 14))
+
+wdbc %>%
+  group_by(class) %>%
+  count() %>% 
+  ungroup() %>%
+  ggplot(aes(class, n, fill = class)) + geom_bar(stat = 'identity') +
+  scale_fill_manual(values = c('red', 'blue')) +
+  custom_theme -> p1
+
+ggplotly(p1)
+```
+
+
+### Chart H
+
+```{r}
+custom_theme <- theme_tufte() +
+  theme(legend.position = c(.9, .9),
+           legend.title = element_text(face = 'italic', size = 12),
+           axis.title = element_text(face = 'bold', size = 14))
+
+wdbc %>% ggplot(aes(class, mean_concave_points, col = class)) +
+  geom_jitter(alpha = .5) +
+  geom_boxplot(alpha = .3) +
+  scale_color_manual(values = c('red', 'blue')) +
+  custom_theme -> p2
+
+ggplotly(p2)
+```
+
+Column
+-----------------------------------------------------------------------
+
+### Chart I
+
+```{r}
+custom_theme <- theme_tufte() +
+  theme(legend.position = c(.9, .9),
+           legend.title = element_text(face = 'italic', size = 12),
+           axis.title = element_text(face = 'bold', size = 14))
+
+wdbc %>% ggplot(aes(class, mean_radius, col = class)) +
+  geom_jitter(alpha = .5) +
+  geom_boxplot(alpha= .5) +
+  scale_color_manual(values = c('red', 'blue')) +
+  custom_theme -> p3
+
+ggplotly(p3)
+```
+
+
+### Chart J
+
+```{r}
+custom_theme <- theme_tufte() +
+  theme(legend.position = c(.9, .9),
+           legend.title = element_text(face = 'italic', size = 12),
+           axis.title = element_text(face = 'bold', size = 14))
+
+wdbc %>%
+  ggplot(aes(mean_concave_points, mean_radius, col = class)) +
+  geom_jitter(alpha = .7) +
+  geom_smooth(alpha = .5)  +
+  scale_color_manual(values = c('red', 'blue')) +
+  custom_theme -> p4
+
+ggplotly(p4)
+```
+
+
+Page 4 {data-orientation=columns data-icon="fa-hashtag"}
+===================================== 
+
+```{r global, include=FALSE}
+library(datasets)
+data(faithful)
+```
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+Waiting time between eruptions and the duration of the eruption for the
+Old Faithful geyser in Yellowstone National Park, Wyoming, USA.
+
+```{r}
+selectInput("n_breaks", label = "Number of bins:",
+            choices = c(10, 20, 35, 50), selected = 20)
+
+sliderInput("bw_adjust", label = "Bandwidth adjustment:",
+            min = 0.2, max = 2, value = 1, step = 0.2)
+```
+
+Column
+-----------------------------------------------------------------------
+
+### Geyser Eruption Duration
+
+```{r}
+renderPlot({
+  hist(faithful$eruptions, probability = TRUE, breaks = as.numeric(input$n_breaks),
+       xlab = "Duration (minutes)", main = "Geyser Eruption Duration")
+  
+  dens <- density(faithful$eruptions, adjust = input$bw_adjust)
+  lines(dens, col = "blue")
+})
+```
+
+
+
+
+
+
+
+
+
+
+
+

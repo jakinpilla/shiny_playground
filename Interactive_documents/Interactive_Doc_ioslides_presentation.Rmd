@@ -1,0 +1,83 @@
+---
+title: "Interactive Document"
+author: "Daniel_Kim"
+date: '2020 4 10 '
+runtime: shiny
+output: ioslides_presentation
+---
+
+***
+
+```{r echo = FALSE}
+selectInput("n_breaks", label = "Number of bins:",
+            choices = c(10, 20, 35, 50), selected = 20)
+
+sliderInput("bw_adjust", label = "Bandwidth adjustment:",
+            min = 0.2, max = 2, value = 1, step = 0.2)
+```
+
+
+
+```{r echo = FALSE}
+renderPlot({
+  hist(faithful$eruptions, probability = TRUE,
+       breaks = as.numeric(input$n_breaks),
+       xlab = "Duration (minutes)",
+       main = "Geyser eruption duration")
+  
+  dens <- density(faithful$eruptions, adjust = input$bw_adjust)
+  lines(dens, col = "blue")
+})
+```
+
+
+***
+
+### 회귀의 소개
+ 
+ - 단순회귀, 다중회귀
+
+ - 최소제곱법(method of least squares) 수학적 기법을 이용해 자료를 가장 잘 서술하는 직선을 선택
+ 
+<br>
+
+#### 직선에 관한 중요한 정보 몇 가지
+ 
+ - 기울기 $b_{1}$, 절편 $b_{0}$
+
+ - $b_{1}$, $b_{0}$들을 회귀계수라고 한다. 
+
+$$Y_{i} = (b_{0} + b_{1} X_{i}) + \epsilon_{i}$$
+
+***
+
+- 데이터를 읽어온다.
+
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+album1 <- read.delim('Album Sales 1.dat', header = T)
+```
+
+- 회귀모형을 적합시킨다.
+
+```{r}
+albumSales.1 <- lm(sales ~ adverts, data =album1)
+```
+
+***
+
+```{r}
+albumSales.1 %>% summary()
+```
+
+***
+
+```{r echo=FALSE}
+shinyAppDir(
+  "C:/Users/Daniel/Documents/myShiny/Two_file_Shiny_apps/",
+  options = list(
+    width = "100%", height = 500
+  )
+)
+```
+

@@ -1,0 +1,38 @@
+---
+title: "Dygraphs"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(dygraphs)
+```
+
+Row
+---------------------------------------------------------------------------
+
+### Lung Deaths (ALL)
+
+```{r}
+dygraph(ldeaths)
+```
+
+
+
+Row {.tabset .tabset-fade}
+---------------------------------------------------------------------------
+
+### Lung Deaths (Male)
+
+```{r}
+dygraph(mdeaths)
+```
+
+### Lung Deaths (Female)
+
+```{r}
+dygraph(fdeaths)
+```
+

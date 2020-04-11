@@ -1,0 +1,26 @@
+---
+title: "Dynamic report"
+author: "Daniel_Kim"
+date: '2020 4 11 '
+output: html_document
+params:
+  n: NA
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+# The `params` object is available in the document
+params$n
+```
+
+- A plot of `params$n` random points.:
+
+```{r}
+library(ggplot2)
+data.frame(x= rnorm(params$n), y = rnorm(params$n)) %>%
+  ggplot(aes(x, y)) +
+  geom_point()
+```
